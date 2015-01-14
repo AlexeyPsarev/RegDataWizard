@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <title>Registration Data Wizard</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <style type="text/css">
+            .right-pad{
+                padding: 0 10px 0 0;
+            }
+            
+            .left-pad{
+                padding: 0 0 0 10px;
+            }
+            
+            .top-pad{
+                padding: 10px 0 0 0;
+            }
+            
+            .top-left-pad{
+                padding: 10px 0 0 10px;
+            }
+            
+            .tab{
+                display: table;
+            }
+            
+            .align-c{
+                text-align: center;
+            }
+            
+            .short-text{
+                width: 150px;
+            }
+            
+            .long-text{
+                width: 250px;
+            }
+            
+            .invalid{
+                background-color: #f2dede;
+            }         
+
+            .error-message{
+                color: red;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="js/bootstrap.min.js"></script>
+        <script src="validation/dist/jquery.validate.js"></script>  
+        <script src="functions.js"></script>
+        <script>
+            $(document).ready(function() {
+                setRules();
+                $("#btn-generate").click(function(){generateRegData();});
+                var guid = generateGUID();
+                $("#d_id").val(guid);
+                $("#btn-reset").click(function(){
+                    $("form")[0].reset();
+                    $("#d_id").val(guid);
+                    generateRegData();
+                });
+                generateRegData();
+            });
+        </script>
+
+        <form>
+            <div class="container-fluid" id="content">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#device" data-toggle="tab">Device</a></li>
+                    <li><a href="#equipment" data-toggle="tab">Equipment</a></li>
+                    <li><a href="#commands" data-toggle="tab">Commands</a></li>
+                    <li><a href="#notifications" data-toggle="tab">Notifications</a></li>
+                </ul>
+
+                <div class="tab-content clearfix" style="min-height: 400px">
+                    <div class="tab-pane active" id="device">
+                        <div class="top-pad">
+                            <p> 
+                                Device is a piece of hardware that is connected to the network
+                                using RESTful or binary protocol. The software running on this
+                                device implements custom logic. DeviceHive module for the device
+                                provides network connectivity and command/notification dispatching.
+                                Device does not necessary have to be a microcontroller or system-on-chip.
+                            </p>
+                        </div>
+                        <div class="top-pad">
+                            <div class="panel panel-default">   
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Device</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>id</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="d_id" type="text" class="long-text req">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input class="btn btn-sm btn-block btn-success" type="button" value="Generate"
+                                                onclick="setDevID()">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p>Device unique identifier.</p>
+                                        </div>
+                                    </div> <!--row-->
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>key</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="d_key" type="text" class="long-text req maxlen" value="device-key">
+                                        </div>
+                                        <div class="col-md-8 col-md-offset-1">
+                                            <p>
+                                                Device authentication key. The key is set during
+                                                device registration and it has to be provided for
+                                                all subsequent calls initiated by device. The key
+                                                maximum length is 64 characters.
+                                            </p>
+                                        </div>
+                                    </div> <!--row-->
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>name</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="d_name" type="text" class="long-text req" value="device-name">
+                                        </div>
+                                        <div class="col-md-8 col-md-offset-1">
+                                            <p>Device display name.</p>
+                                        </div>
+                                    </div> <!--row-->
+                                </div> <!-- panel body-->
+                            </div> <!-- panel -->
+                        </div>
+ 
+                        <div>
+                            Device class holds meta-information about devices.
+                        </div>
+                        <div class="top-pad">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Device class</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>name</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="dc_name" type="text" class="long-text req" value="deviceclass-name">
+                                        </div>
+                                        <div class="col-md-7 col-md-offset-1">
+                                            <p>Device class display name.</p>
+                                        </div>
+                                    </div> <!--row-->
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>version</label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="dc_version" type="text" class="long-text req" value="deviceclass-version">
+                                        </div>
+                                        <div class="col-md-7 col-md-offset-1">
+                                            <p>Device class version.</p>
+                                        </div>
+                                    </div> <!--row-->
+                                </div> <!-- panel body -->
+                            </div> <!-- panel -->
+                        </div>
+                    </div> <!--tab pane "device"-->
+
+                    <div class="tab-pane" id="equipment">
+                        <div class="row top-left-pad">
+                            <div id="eq-container" class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-5">
+                                        <input type="button" class="btn btn-sm btn-block btn-success" value="Add equipment"
+                                               onclick="addEq(document.getElementById('eq-container'), equipment)">
+                                    </div>  
+                                </div>
+                            </div>
+                            <div class="col-md-6 top-left-pad">
+                                <p>
+                                    Device class equipment is a collection of associated equipment objects.<br>
+                                    Equipment <b>code</b> is used to reference particular equipment and it should
+                                    be unique within a device class.<br>
+                                    Equipment <b>type</b> is an arbitrary string representing equipment capabilities.
+                                </p>
+                            </div>
+                        </div> <!-- row -->
+                    </div> <!--tab pane equipment-->
+                        
+                    <div class="tab-pane" id="commands">
+                        <div class="row top-left-pad">
+                            <div id="cmd-container" class="col-md-7">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-5">
+                                        <input type="button" class="btn btn-sm btn-block btn-success" value="Add command"
+                                            onclick="addCmd(document.getElementById('cmd-container'), commands)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 top-left-pad">
+                                <p>
+                                    Device command is a unit of information dispatched by clients for devices.
+                                </p>
+                                <p>
+                                    The message <b>intent</b> is unique identifier of the purpose of
+                                    the message. Message intents with values below 256 are reserved
+                                    for system events, while the rest of the values could be used for custom messages.
+                                </p>
+                            </div>
+                        </div> <!-- row -->
+                    </div> <!--tab pane commands-->
+                    
+                    <div class="tab-pane" id="notifications">
+                        <div class="row top-left-pad">
+                            <div id="notif-container" class="col-md-7">
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-5">
+                                        <input type="button" class="btn btn-sm btn-block btn-success" value="Add notification"
+                                            onclick="addNotif(document.getElementById('notif-container'), notifications)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 top-left-pad">
+                                <p>
+                                    Device notification is a unit of information dispatched by devices for clients.
+                                </p>
+                                <p>
+                                    The message <b>intent</b> is unique identifier of the purpose of
+                                    the message. Message intents with values below 256 are reserved
+                                    for system events, while the rest of the values could be used for custom messages.
+                                </p>
+                            </div>
+                        </div> <!-- row -->
+                    </div> <!--tab pane notifications-->
+                </div> <!--tab-content-->
+                
+                <div class="row top-pad">
+                    <div class="col-md-1">
+                        <input type="button" class="btn btn-primary btn-sm btn-block"
+                            id="btn-generate" value="Generate">
+                    </div> 
+                    <div class="col-md-1">
+                        <input type="button" class="btn btn-primary btn-sm btn-block"
+                            id="btn-reset" value="Reset">
+                    </div>    
+                </div>
+                <p class="top-pad"><b>Registration Data</b></p>
+                <div>
+                    <textarea readonly rows="10" cols="80"></textarea>
+                </div>
+
+            </div> <!-- container-fluid -->
+        </form>
+    </body>
+</html>
